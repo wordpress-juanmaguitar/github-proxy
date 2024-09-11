@@ -1,207 +1,108 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta
-      name="description"
-      content="Super simple proxy service I built for a very specific need that no one else besides me will probably ever use"
-    />
-    <title>GitHub Proxy</title>
-    <script src="https://cdn.tailwindcss.com/"></script>
-    <style>
-      a {
-        color: rgb(0, 0, 238);
-        text-decoration: underline;
-      }
-      a:hover {
-        text-decoration: none;
-      }
-    </style>
-  </head>
-  <body class="flex flex-col justify-center min-h-screen bg-gray-50">
-    <div class="text-center px-4 mb-14">
-      <h1 class="text-5xl font-bold mb-4">GitHub Proxy</h1>
-      <p class="text-xl text-gray-600 mb-8">
-        A proxy for the GitHub's archive files.<br />
-        It is intended to be used as
-        <a
-          href="https://wordpress.github.io/wordpress-playground/blueprints/steps/resources#urlreference"
-          >resource urls</a
-        >
-        for
-        <a href="https://wordpress.org/playground/">WordPress Playground</a>.
-      </p>
-      <label class="block text-gray-700 text-lg font-bold mb-2" for="url">
-        URL Formats
-      </label>
-
-      <div class="max-w-xl mx-auto">
-        <div class="text-left mb-4">
-          <div class="font-bold mb-2">Full Branch</div>
-          <span class="mb-4 text-gray-500 text-sm"
-            >Download all code for a specific branch. If no branch is passed, we
-            will determine the default branch and return that.</span
-          >
-          <input
-            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-            id="url"
-            type="text"
-            value="https://github-proxy.com/proxy/?repo={repo}[&branch={branch}]"
-            readonly
-          />
-        </div>
-        <div class="text-left mb-4">
-          <div class="font-bold mb-2">Full PR</div>
-          <span class="mb-4 text-gray-500 text-sm"
-            >Download all the code for a specific PR, referenced by the PR
-            number</span
-          >
-          <input
-            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-            id="url"
-            type="text"
-            value="https://github-proxy.com/proxy/?repo={repo}&pr={pr}"
-            readonly
-          />
-        </div>
-        <div class="text-left mb-4">
-          <div class="font-bold mb-2">Full Commit</div>
-          <span class="mb-4 text-gray-500 text-sm"
-            >Download all the code for a specific commit, referenced by the
-            commit SHA</span
-          >
-          <input
-            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-            id="url"
-            type="text"
-            value="https://github-proxy.com/proxy/?repo={repo}&commit={commit}"
-            readonly
-          />
-        </div>
-        <div class="text-left mb-4">
-          <div class="font-bold mb-2">Full Release</div>
-          <span class="mb-4 text-gray-500 text-sm"
-            >Download all the code for a release, referenced by the release
-            tag</span
-          >
-          <input
-            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-            id="url"
-            type="text"
-            value="https://github-proxy.com/proxy/?repo={repo}&release={tag}"
-            readonly
-          />
-        </div>
-
-        <div class="text-left mb-4">
-          <div class="font-bold mb-2">Asset from a Release</div>
-          <span class="mb-4 text-gray-500 text-sm"
-            >Download a specific asset from a release from a GitHub URL (<button
-              class="example"
-              data-example="https://github-proxy.com/https://github.com/zerocool/gibson/releases/download/nightly/hacker.zip"
-            >
-              example</button
-            >)</span
-          >
-          <input
-            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-            id="url"
-            type="text"
-            value="https://github-proxy.com/<Full GitHub URL>"
-            readonly
-          />
-          <span class="mb-4 text-gray-500 text-sm"
-            >Download a specific asset from a release, referenced by the release
-            tag and asset filename</span
-          >
-          <input
-            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-            id="url"
-            type="text"
-            value="https://github-proxy.com/proxy/?repo={repo}&release={tag|'latest'}&asset={filename}"
-            readonly
-          />
-        </div>
-
-        <hr
-          class="w-48 h-1 mx-auto bg-gray-100 border-0 rounded dark:bg-gray-200 mb-4"
-        />
-
-        <div class="text-left mb-4">
-          <div class="font-bold mb-2">Partial Branch</div>
-          <span class="mb-4 text-gray-500 text-sm"
-            >Download only a certain subdirectory of the repo for a specific
-            branch.</span
-          >
-          <input
-            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-            id="url"
-            type="text"
-            value="https://github-proxy.com/proxy/?repo={repo}&branch={branch}&directory={directory}"
-            readonly
-          />
-        </div>
-        <div class="text-left mb-4">
-          <div class="font-bold mb-2">Partial PR</div>
-          <span class="mb-4 text-gray-500 text-sm"
-            >Download only a certain subdirectory of the repo for a specific
-            PR.</span
-          >
-          <input
-            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-            id="url"
-            type="text"
-            value="https://github-proxy.com/proxy/?repo={repo}&pr={pr}&directory={directory}"
-            readonly
-          />
-        </div>
-        <div class="text-left mb-4">
-          <div class="font-bold mb-2">Partial Commit</div>
-          <span class="mb-4 text-gray-500 text-sm"
-            >Download only a certain subdirectory of the repo for a specific
-            commit.</span
-          >
-          <input
-            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-            id="url"
-            type="text"
-            value="https://github-proxy.com/proxy/?repo={repo}&commit={commit}&directory={directory}"
-            readonly
-          />
-        </div>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Super simple proxy service I built for a very specific need that no one else besides me will probably ever use">
+  <title>GitHub Proxy</title>
+  <script src="https://cdn.tailwindcss.com/"></script>
+  <style>
+    a {
+      color: rgb(0, 0, 238);
+      text-decoration: underline;
+    }
+    a:hover {
+      text-decoration: none;
+    }
+  </style>
+</head>
+<body class="flex flex-col justify-center min-h-screen bg-gray-50">
+  <div class="text-center px-4 mb-14">
+    <h1 class="text-5xl font-bold mb-4">GitHub Proxy</h1>
+    <p class="text-xl text-gray-600 mb-8">
+    <p class="text-xl text-gray-600 mb-8">A proxy for the GitHub's archive files.<br>
+      It is intended to be used as <a href="https://wordpress.github.io/wordpress-playground/blueprints/steps/resources#urlreference">resource urls</a> for <a href="https://wordpress.org/playground/">WordPress Playground</a>.
+    </p>
+    <label class="block text-gray-700 text-lg font-bold mb-2" for="url">
+      URL Formats
+    </label>
+    
+    <div class="max-w-xl mx-auto">
+      <div class="text-left mb-4">
+        <div class="font-bold mb-2">Full Branch</div>
+        <span class="mb-4 text-gray-500 text-sm">Download all code for a specific branch. If no branch is passed, we will determine the default branch and return that.</span>
+        <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="url" type="text" value="https://github-proxy.com/proxy/?repo={repo}[&branch={branch}]" readonly>
+      </div>
+      <div class="text-left mb-4">
+        <div class="font-bold mb-2">Full PR</div>
+        <span class="mb-4 text-gray-500 text-sm">Download all the code for a specific PR, referenced by the PR number</span>
+        <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="url" type="text" value="https://github-proxy.com/proxy/?repo={repo}&pr={pr}" readonly>
+      </div>
+      <div class="text-left mb-4">
+        <div class="font-bold mb-2">Full Commit</div>
+        <span class="mb-4 text-gray-500 text-sm">Download all the code for a specific commit, referenced by the commit SHA</span>
+        <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="url" type="text" value="https://github-proxy.com/proxy/?repo={repo}&commit={commit}" readonly>
+      </div>
+      <div class="text-left mb-4">
+        <div class="font-bold mb-2">Full Release</div>
+        <span class="mb-4 text-gray-500 text-sm">Download all the code for a release, referenced by the release tag</span>
+        <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="url" type="text" value="https://github-proxy.com/proxy/?repo={repo}&release={tag}" readonly>
       </div>
 
-      <div class="text-right mb-4">
-        <!-- <div class="font-bold mb-2">Partial Commit</div> -->
-        <span class="mb-4 text-gray-500 text-sm"
-          ><sup>*</sup> Be sure to add the trailing slash after /proxy,
-          <i>for now</i></span
-        >
+      <div class="text-left mb-4">
+        <div class="font-bold mb-2">Asset from a Release</div>
+        <span class="mb-4 text-gray-500 text-sm">Download a specific asset from a release from a GitHub URL (<button class="example" data-example="https://github-proxy.com/https://github.com/zerocool/gibson/releases/download/nightly/hacker.zip">example</button>)</span>
+        <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="url" type="text" value="https://github-proxy.com/<Full GitHub URL>" readonly>
+        <span class="mb-4 text-gray-500 text-sm">Download a specific asset from a release, referenced by the release tag and asset filename</span>
+        <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="url" type="text" value="https://github-proxy.com/proxy/?repo={repo}&release={tag|'latest'}&asset={filename}" readonly>
       </div>
+
+      <hr class="w-48 h-1 mx-auto bg-gray-100 border-0 rounded dark:bg-gray-200 mb-4">
+
+      <div class="text-left mb-4">
+        <div class="font-bold mb-2">Partial Branch</div>
+        <span class="mb-4 text-gray-500 text-sm">Download only a certain subdirectory of the repo for a specific branch.</span>
+        <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="url" type="text" value="https://github-proxy.com/proxy/?repo={repo}&branch={branch}&directory={directory}" readonly>
+      </div>
+      <div class="text-left mb-4">
+        <div class="font-bold mb-2">Partial PR</div>
+        <span class="mb-4 text-gray-500 text-sm">Download only a certain subdirectory of the repo for a specific PR.</span>
+        <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="url" type="text" value="https://github-proxy.com/proxy/?repo={repo}&pr={pr}&directory={directory}" readonly>
+      </div>
+      <div class="text-left mb-4">
+        <div class="font-bold mb-2">Partial Commit</div>
+        <span class="mb-4 text-gray-500 text-sm">Download only a certain subdirectory of the repo for a specific commit.</span>
+        <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="url" type="text" value="https://github-proxy.com/proxy/?repo={repo}&commit={commit}&directory={directory}" readonly>
+      </div>    
     </div>
 
-    <footer
-      class="fixed inset-x-0 bottom-0 py-4 bg-gray-800 text-center text-xs text-gray-300 grid grid-cols-3 gap-4"
-    >
-      <div class="flex justify-center">
-        <span>stoph</span>
-      </div>
-      <div class="flex justify-center">
-        <span></span>
-      </div>
-      <div class="flex justify-center">
-        <span>Made in Charlotte</span>
-      </div>
-    </footer>
-  </body>
+    <div class="text-right mb-4">
+      <!-- <div class="font-bold mb-2">Partial Commit</div> -->
+      <span class="mb-4 text-gray-500 text-sm"><sup>*</sup> Be sure to add the trailing slash after /proxy, <i>for now</i></span>
+    </div>
 
-  <script>
-    document.querySelectorAll(".example").forEach((button) => {
-      button.addEventListener("click", function () {
-        const input = this.closest("span").nextElementSibling;
-        input.value = this.getAttribute("data-example");
-      });
-    });
-  </script>
+  </div>
+
+  <footer class="fixed inset-x-0 bottom-0 py-4 bg-gray-800 text-center text-xs text-gray-300 grid grid-cols-3 gap-4">
+    <div class="flex justify-center">
+      <span>stoph</span>
+    </div>
+    <div class="flex justify-center">
+      <span></span>
+    </div>
+    <div class="flex justify-center">
+      <span>Made in Charlotte</span>
+    </div>
+  </footer>
+</body>
+
+<script>
+document.querySelectorAll('.example').forEach(button => {
+  button.addEventListener('click', function() {
+    const input = this.closest('span').nextElementSibling;
+    input.value = this.getAttribute('data-example');
+  });
+});
+</script>
+
 </html>
